@@ -1,7 +1,17 @@
+using Microsoft.Data.SqlClient;
+using ProductApp.Repository;
+using System.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Configure Dapper With Connection String
+
+builder.Services.AddTransient<IDbConnection>(b =>
+new SqlConnection(builder.Configuration.GetConnectionString("ProductAppConnectionString")));
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 var app = builder.Build();
 
@@ -22,6 +32,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Product}/{action=Index}/{id?}");
 
 app.Run();
